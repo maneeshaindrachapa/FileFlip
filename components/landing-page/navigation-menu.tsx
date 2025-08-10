@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Folder } from "lucide-react";
+import { Menu, Folder, LucideFolderCog } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +32,7 @@ const LINKS = [
   { href: "/ebook", label: "eBook" },
   { href: "/units", label: "Units" },
   { href: "/currency", label: "Currencies" },
+  { href: "/epoch", label: "Epoch" },
 ];
 
 export default function LandingNavigationMenu({
@@ -52,13 +53,11 @@ export default function LandingNavigationMenu({
     <div
       className={cn(
         "sticky top-0 z-50 w-full",
-        "bg-[black] text-white",
+        "bg-[white] text-[#212121]",
         shadow && "shadow-[0_6px_20px_-12px_rgba(0,0,0,0.6)]"
       )}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-3 sm:px-4">
-        <div className="pointer-events-none absolute -top-24 -left-40 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -right-40 h-[520px] w-[520px] rounded-full bg-indigo-600/20 blur-3xl" />
         {/* Left: brand + mobile hamburger */}
         <div className="flex items-center gap-2">
           {/* Mobile: hamburger */}
@@ -76,11 +75,13 @@ export default function LandingNavigationMenu({
             <SheetContent side="left" className="w-72">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
-                  <Folder className="h-5 w-5" />
+                  <LucideFolderCog className="h-5 w-5" />
                   <span className="font-semibold">{brand}</span>
                 </SheetTitle>
               </SheetHeader>
-              <nav className={`${ubuntu.className} mt-6 flex flex-col`}>
+              <nav
+                className={`${ubuntu.className} mt-6 flex flex-col text-[#212121]`}
+              >
                 {LINKS.map((l) => (
                   <Link
                     key={l.href}
@@ -94,7 +95,7 @@ export default function LandingNavigationMenu({
                   </Link>
                 ))}
               </nav>
-              <div className="mt-6 px-3 border-t pt-4 text-xs text-muted-foreground">
+              <div className="mt-6 px-3 border-t pt-4 text-xs text-[#212121]">
                 {convertedCount.toLocaleString()} files converted
               </div>
             </SheetContent>
@@ -120,8 +121,8 @@ export default function LandingNavigationMenu({
                   <Link
                     href={l.href}
                     className={cn(
-                      "text-sm text-white/80 hover:text-white transition",
-                      pathname === l.href && "text-white font-medium"
+                      "text-sm text-[#212121]/80 hover:text-[#212121] transition relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100",
+                      pathname === l.href && "text-[#212121] font-medium"
                     )}
                   >
                     {l.label}
@@ -135,11 +136,11 @@ export default function LandingNavigationMenu({
         {/* Right: counter + CTA (desktop) */}
         <div className="hidden items-center gap-3 md:flex">
           <div
-            className={`${ubuntu.className} text-xs rounded-full border border-white/15 px-2.5 py-1 text-white/75`}
+            className={`${ubuntu.className} text-xs rounded-full border border-white/15 px-2.5 py-1 text-[#212121]/75`}
             title="Files converted"
           >
             {convertedCount.toLocaleString()}&nbsp;
-            <span className="text-white/50"> We&apos;ve converted</span>
+            <span className="text-[#212121]/50"> We&apos;ve converted</span>
           </div>
         </div>
       </div>

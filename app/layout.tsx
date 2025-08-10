@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "FlipFile | Free Online Converters | Fast, Private, No Upload",
@@ -23,20 +22,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="fixed inset-0 -z-10 flex items-center justify-center">
-            <div className="h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-3xl" />
-            <div className="h-[520px] w-[520px] rounded-full bg-indigo-600/20 blur-3xl" />
-          </div>
-          {children}
-        </ThemeProvider>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

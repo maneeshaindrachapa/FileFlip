@@ -44,15 +44,15 @@ export default function Dropzone({
         handle(e.dataTransfer.files);
       }}
       className={cn(
-        "rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-center",
-        over && "bg-white/[0.07]"
+        "rounded-2xl border border-[#212121]/10 bg-[#212121]/[0.04] p-6 text-center",
+        over && "bg-[#212121]/[0.07]"
       )}
     >
       <div className={`${ubuntu.className} flex flex-col items-center gap-3`}>
-        <div className="grid h-12 w-12 place-items-center rounded-lg bg-white/5">
+        <div className="grid h-12 w-12 place-items-center rounded-lg bg-[#212121]/5">
           <Upload className="h-6 w-6" />
         </div>
-        <p className="text-sm text-white/80">Drag & drop images here, or</p>
+        <p className="text-sm text-[#212121]/80">Drag & drop images here, or</p>
         <Button
           onClick={() => inputRef.current?.click()}
           className="rounded-full"

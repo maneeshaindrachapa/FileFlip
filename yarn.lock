@@ -158,6 +158,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
+"@image-tracer-ts/core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@image-tracer-ts/core/-/core-1.0.2.tgz#3924713b816d02c421164cda028b46d87e58c819"
+  integrity sha512-IY1/AMqvu6444dEwaFwJXwskp2fyKTFFVKvKHXBCT7hGz7OLRLHrWGHJrCsVw6HPSeucoHD5j/gtieWVSzocEw==
+
 "@img/sharp-darwin-arm64@0.34.3":
   version "0.34.3"
   resolved "https://registry.yarnpkg.com/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.34.3.tgz#4850c8ace3c1dc13607fa07d43377b1f9aa774da"
@@ -613,6 +618,22 @@
     "@radix-ui/react-context" "1.1.2"
     "@radix-ui/react-primitive" "2.1.3"
 
+"@radix-ui/react-radio-group@^1.3.7":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-radio-group/-/react-radio-group-1.3.7.tgz#49f822d97c26c4745976108a301ba2e8545d8928"
+  integrity sha512-9w5XhD0KPOrm92OTTE0SysH3sYzHsSTHNvZgUBo/VZ80VdYyB5RneDbc0dKpURS24IxkoFRu/hI0i4XyfFwY6g==
+  dependencies:
+    "@radix-ui/primitive" "1.1.2"
+    "@radix-ui/react-compose-refs" "1.1.2"
+    "@radix-ui/react-context" "1.1.2"
+    "@radix-ui/react-direction" "1.1.1"
+    "@radix-ui/react-presence" "1.1.4"
+    "@radix-ui/react-primitive" "2.1.3"
+    "@radix-ui/react-roving-focus" "1.1.10"
+    "@radix-ui/react-use-controllable-state" "1.2.2"
+    "@radix-ui/react-use-previous" "1.1.1"
+    "@radix-ui/react-use-size" "1.1.1"
+
 "@radix-ui/react-roving-focus@1.1.10":
   version "1.1.10"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-roving-focus/-/react-roving-focus-1.1.10.tgz#46030496d2a490c4979d29a7e1252465e51e4b0b"
@@ -654,6 +675,23 @@
     "@radix-ui/react-visually-hidden" "1.2.3"
     aria-hidden "^1.2.4"
     react-remove-scroll "^2.6.3"
+
+"@radix-ui/react-slider@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-slider/-/react-slider-1.3.5.tgz#f9c074dc0dd2850aa42609e72de74642a4851b79"
+  integrity sha512-rkfe2pU2NBAYfGaxa3Mqosi7VZEWX5CxKaanRv0vZd4Zhl9fvQrg0VM93dv3xGLGfrHuoTRF3JXH8nb9g+B3fw==
+  dependencies:
+    "@radix-ui/number" "1.1.1"
+    "@radix-ui/primitive" "1.1.2"
+    "@radix-ui/react-collection" "1.1.7"
+    "@radix-ui/react-compose-refs" "1.1.2"
+    "@radix-ui/react-context" "1.1.2"
+    "@radix-ui/react-direction" "1.1.1"
+    "@radix-ui/react-primitive" "2.1.3"
+    "@radix-ui/react-use-controllable-state" "1.2.2"
+    "@radix-ui/react-use-layout-effect" "1.1.1"
+    "@radix-ui/react-use-previous" "1.1.1"
+    "@radix-ui/react-use-size" "1.1.1"
 
 "@radix-ui/react-slot@1.2.3", "@radix-ui/react-slot@^1.2.3":
   version "1.2.3"
@@ -868,6 +906,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/convert-units@^2.3.12":
+  version "2.3.12"
+  resolved "https://registry.yarnpkg.com/@types/convert-units/-/convert-units-2.3.12.tgz#93b8b8b4a077236d1a89684b07665e4ffd6c462c"
+  integrity sha512-4EaowCOJMy8Cb2nB8XSN61U82VV4qFsFYY2WhKIwXy936aBTp2yWKvMpTCt1g76MDmd+DmVi9YxKSYVrfCQ/yw==
+
 "@types/estree@^1.0.6":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.8.tgz#958b91c991b1867ced318bedea0e215ee050726e"
@@ -901,6 +944,11 @@
   integrity sha512-WmdoynAX8Stew/36uTSVMcLJJ1KRh6L3IZRx1PZ7qJtBqT3dYTgyDTx8H1qoRghErydW7xw9mSJ3wS//tCRpFA==
   dependencies:
     csstype "^3.0.2"
+
+"@types/upng-js@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@types/upng-js/-/upng-js-2.1.5.tgz#5d62b0b3472c9963fd5e00060fd1be68dd8b9c04"
+  integrity sha512-CzXg1lcCcWzrmYmke9BLbBPzb2DpdC1bXuXf0BtK3Bygvsozslei8S1bheDI1QUfZzZpMeQI5fywfnMj4CxocQ==
 
 "@typescript-eslint/eslint-plugin@^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
   version "8.39.0"
@@ -1397,6 +1445,14 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+convert-units@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/convert-units/-/convert-units-2.3.4.tgz#a279f4b3cb9b5d5094beba61abc742dcb46a180d"
+  integrity sha512-ERHfdA0UhHJp1IpwE6PnFJx8LqG7B1ZjJ20UvVCmopEnVCfER68Tbe3kvN63dLbYXDA2xFWRE6zd4Wsf0w7POg==
+  dependencies:
+    lodash.foreach "2.3.x"
+    lodash.keys "2.3.x"
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -2134,6 +2190,11 @@ ignore@^7.0.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-7.0.5.tgz#4cb5f6cd7d4c7ab0365738c7aea888baa6d7efd9"
   integrity sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==
 
+imagetracerjs@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/imagetracerjs/-/imagetracerjs-1.2.6.tgz#1f618b9b94b6f298145ce9cb5e74a88447f15184"
+  integrity sha512-LKJlnKmXFzDdh6IZtXTyBxXcCLTAkwgKYS+NMiPXiXVnlTLjQC8fq7U89laUSgHtypJB3TdMMDK4ecG5NI/Cgw==
+
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
@@ -2555,10 +2616,151 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash._basebind@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._basebind/-/lodash._basebind-2.3.0.tgz#2b5bc452a0e106143b21869f233bdb587417d248"
+  integrity sha512-SHqM7YCuJ+BeGTs7lqpWnmdHEeF4MWxS3dksJctHFNxR81FXPOzA4bS5Vs5CpcGTkBpM8FCl+YEbQEblRw8ABg==
+  dependencies:
+    lodash._basecreate "~2.3.0"
+    lodash._setbinddata "~2.3.0"
+    lodash.isobject "~2.3.0"
+
+lodash._basecreate@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._basecreate/-/lodash._basecreate-2.3.0.tgz#9b88a86a4dcff7b7f3c61d83a2fcfc0671ec9de0"
+  integrity sha512-vwZaWldZwS2y9b99D8i9+WtgiZXbHKsBsMrpxJEqTsNW20NhJo5W8PBQkeQO9CmxuqEYn8UkMnfEM2MMT4cVrw==
+  dependencies:
+    lodash._renative "~2.3.0"
+    lodash.isobject "~2.3.0"
+    lodash.noop "~2.3.0"
+
+lodash._basecreatecallback@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._basecreatecallback/-/lodash._basecreatecallback-2.3.0.tgz#37b2ab17591a339e988db3259fcd46019d7ac362"
+  integrity sha512-Ev+pDzzfVfgbiucpXijconLGRBar7/+KNCf05kSnk4CmdDVhAy1RdbU9efCJ/o9GXI08JdUGwZ+5QJ3QX3kj0g==
+  dependencies:
+    lodash._setbinddata "~2.3.0"
+    lodash.bind "~2.3.0"
+    lodash.identity "~2.3.0"
+    lodash.support "~2.3.0"
+
+lodash._basecreatewrapper@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._basecreatewrapper/-/lodash._basecreatewrapper-2.3.0.tgz#aa0c61ad96044c3933376131483a9759c3651247"
+  integrity sha512-YLycQ7k8AB9Wc1EOvLNxuRWcqipDkMXq2GCgnLWQR6qtgTb3gY3LELzEpnFshrEO4LOLs+R2EpcY+uCOZaLQ8Q==
+  dependencies:
+    lodash._basecreate "~2.3.0"
+    lodash._setbinddata "~2.3.0"
+    lodash._slice "~2.3.0"
+    lodash.isobject "~2.3.0"
+
+lodash._createwrapper@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._createwrapper/-/lodash._createwrapper-2.3.0.tgz#d1aae1102dadf440e8e06fc133a6edd7fe146075"
+  integrity sha512-XjaI/rzg9W+WO4WJDQ+PRlHD5sAMJ1RhJLuT65cBxLCb1kIYs4U20jqvTDGAWyVT3c34GYiLd9AreHYuB/8yJA==
+  dependencies:
+    lodash._basebind "~2.3.0"
+    lodash._basecreatewrapper "~2.3.0"
+    lodash.isfunction "~2.3.0"
+
+lodash._objecttypes@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._objecttypes/-/lodash._objecttypes-2.3.0.tgz#6a3ea3987dd6eeb8021b2d5c9c303549cc2bae1e"
+  integrity sha512-jbA6QyHt9cw3BzvbWzIcnU3Z12jSneT6xBgz3Y782CJsN1tV5aTBKrFo2B4AkeHBNaxSrbPYZZpi1Lwj3xjdtg==
+
+lodash._renative@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._renative/-/lodash._renative-2.3.0.tgz#77d8edd4ced26dd5971f9e15a5f772e4e317fbd3"
+  integrity sha512-v44MRirqYqZGK/h5UKoVqXWF2L+LUiLTU+Ogu5rHRVWJUA1uWIlHaMpG8f/OA8j++BzPMQij9+erXHtgFcbuwg==
+
+lodash._setbinddata@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._setbinddata/-/lodash._setbinddata-2.3.0.tgz#e5610490acd13277d59858d95b5f2727f1508f04"
+  integrity sha512-xMFfbF7dL+sFtrdE49uHFmfpBAEwlFtfgMp86nQRlAF6aizYL+3MTbnYMKJSkP1W501PhsgiBED5kBbZd8kR2g==
+  dependencies:
+    lodash._renative "~2.3.0"
+    lodash.noop "~2.3.0"
+
+lodash._shimkeys@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._shimkeys/-/lodash._shimkeys-2.3.0.tgz#611f93149e3e6c721096b48769ef29537ada8ba9"
+  integrity sha512-9Iuyi7TiWMGa/9+2rqEE+Zwye4b/U2w7Saw6UX1h6Xs88mEER+uz9FZcEBPKMVKsad9Pw5GNAcIBRnW2jNpneQ==
+  dependencies:
+    lodash._objecttypes "~2.3.0"
+
+lodash._slice@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash._slice/-/lodash._slice-2.3.0.tgz#147198132859972e4680ca29a5992c855669aa5c"
+  integrity sha512-7C61GhzRUv36gTafr+RIb+AomCAYsSATEoK4OP0VkNBcwvsM022Z22AVgqjjzikeNO1U29LzsJZDvLbiNPUYvA==
+
+lodash.bind@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.bind/-/lodash.bind-2.3.0.tgz#c2a8e18b68e5ecc152e2b168266116fea5b016cc"
+  integrity sha512-goakyOo+FMN8lttMPnZ0UNlr5RlzX4IrUXyTJPT2A0tGCMXySupond9wzvDqTvVmYTcQjIKGrj8naJDS2xWAlQ==
+  dependencies:
+    lodash._createwrapper "~2.3.0"
+    lodash._renative "~2.3.0"
+    lodash._slice "~2.3.0"
+
+lodash.foreach@2.3.x:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-2.3.0.tgz#083404c91e846ee77245fdf9d76519c68b2af168"
+  integrity sha512-yLnyptVRJd0//AbGp480grgQG9iaDIV5uOgSbpurRy1dYybPbjNTLQ3FyLEQ84buVLPG7jyaiyvpzgfOutRB3Q==
+  dependencies:
+    lodash._basecreatecallback "~2.3.0"
+    lodash.forown "~2.3.0"
+
+lodash.forown@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.forown/-/lodash.forown-2.3.0.tgz#24fb4aaf800d45fc2dc60bfec3ce04c836a3ad7f"
+  integrity sha512-dUnCsuQTtq3Y7bxPNoEEqjJjPL2ftLtcz2PTeRKvhbpdM514AvnqCjewHGsm/W+dwspIwa14KoWEZeizJ7smxA==
+  dependencies:
+    lodash._basecreatecallback "~2.3.0"
+    lodash._objecttypes "~2.3.0"
+    lodash.keys "~2.3.0"
+
+lodash.identity@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.identity/-/lodash.identity-2.3.0.tgz#6b01a210c9485355c2a913b48b6711219a173ded"
+  integrity sha512-NYJ2r2cwy3tkx/saqbIZEX6oQUzjWTnGRu7d/zmBjMCZos3eHBxCpbvWFWSetv8jFVrptsp6EbWjzNgBKhUoOA==
+
+lodash.isfunction@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-2.3.0.tgz#6b2973e47a647cf12e70d676aea13643706e5267"
+  integrity sha512-X5lteBYlCrVO7Qc00fxP8W90fzRp6Ax9XcHANmU3OsZHdSyIVZ9ZlX5QTTpRq8aGY+9I5Rmd0UTzTIIyWPugEQ==
+
+lodash.isobject@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.isobject/-/lodash.isobject-2.3.0.tgz#2e16d3fc583da9831968953f2d8e6d73434f6799"
+  integrity sha512-jo1pfV61C4TE8BfEzqaHj6EIKiSkFANJrB6yscwuCJMSRw5tbqjk4Gv7nJzk4Z6nFKobZjGZ8Qd41vmnwgeQqQ==
+  dependencies:
+    lodash._objecttypes "~2.3.0"
+
+lodash.keys@2.3.x, lodash.keys@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-2.3.0.tgz#b350f4f92caa9f45a4a2ecf018454cf2f28ae253"
+  integrity sha512-c0UW0ffqMxSCtoVbmVt2lERJLkEqgoOn2ejPsWXzr0ZrqRbl3uruGgwHzhtqXxi6K/ei3Ey7zimOqSwXgzazPg==
+  dependencies:
+    lodash._renative "~2.3.0"
+    lodash._shimkeys "~2.3.0"
+    lodash.isobject "~2.3.0"
+
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.noop@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.noop/-/lodash.noop-2.3.0.tgz#3059d628d51bbf937cd2a0b6fc3a7f212a669c2c"
+  integrity sha512-NpSm8HRm1WkBBWHUveDukLF4Kfb5P5E3fjHc9Qre9A11nNubozLWD2wH3UBTZbu+KSuX8aSUvy9b+PUyEceJ8g==
+
+lodash.support@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.support/-/lodash.support-2.3.0.tgz#7eaf038af4f0d6aab776b44aa6dcfc80334c9bfd"
+  integrity sha512-etc7VWbB0U3Iya8ixj2xy4sDBN3jvPX7ODi8iXtn4KkkjNpdngrdc7Vlt5jub/Vgqx6/dWtp7Ml9awhCQPYKGQ==
+  dependencies:
+    lodash._renative "~2.3.0"
 
 loose-envify@^1.4.0:
   version "1.4.0"
@@ -2792,15 +2994,15 @@ p-locate@^5.0.0:
   dependencies:
     p-limit "^3.0.2"
 
+pako@^1.0.5, pako@~1.0.2:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
+  integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
+
 pako@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/pako/-/pako-2.1.0.tgz#266cc37f98c7d883545d11335c00fbd4062c9a86"
   integrity sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==
-
-pako@~1.0.2:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
-  integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -3481,6 +3683,13 @@ unrs-resolver@^1.6.2:
     "@unrs/resolver-binding-win32-arm64-msvc" "1.11.1"
     "@unrs/resolver-binding-win32-ia32-msvc" "1.11.1"
     "@unrs/resolver-binding-win32-x64-msvc" "1.11.1"
+
+upng-js@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/upng-js/-/upng-js-2.1.0.tgz#7176e73973db361ca95d0fa14f958385db6b9dd2"
+  integrity sha512-d3xzZzpMP64YkjP5pr8gNyvBt7dLk/uGI67EctzDuVp4lCZyVMo0aJO6l/VDlgbInJYDY6cnClLoBp29eKWI6g==
+  dependencies:
+    pako "^1.0.5"
 
 uri-js@^4.2.2:
   version "4.4.1"

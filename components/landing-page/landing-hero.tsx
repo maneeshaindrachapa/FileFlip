@@ -8,7 +8,7 @@ import { PiFileDuotone, PiVideoLight } from "react-icons/pi";
 import { HiPhotograph } from "react-icons/hi";
 import { GiWhiteBook } from "react-icons/gi";
 import { AiOutlineCalculator } from "react-icons/ai";
-import { BsCurrencyExchange } from "react-icons/bs";
+import { BsClockHistory, BsCurrencyExchange } from "react-icons/bs";
 
 const tiles = [
   { href: "/video", icon: PiVideoLight, label: "Convert a Video & Audio" },
@@ -17,21 +17,22 @@ const tiles = [
   { href: "/ebook", icon: GiWhiteBook, label: "Convert an eBook" },
   { href: "/units", icon: AiOutlineCalculator, label: "Convert Units" },
   { href: "/currency", icon: BsCurrencyExchange, label: "Convert Currencies" },
+  { href: "/epoch", icon: BsClockHistory, label: "Convert Epoch Time" },
 ];
 
 export default function LandingHero() {
   return (
-    <section className="relative overflow-hidden bg-[black] text-white">
+    <section className="relative overflow-hidden bg-transparent text-[#212121]">
       <div className="mx-auto max-w-6xl px-5 pt-14 pb-20">
         {/* Headline */}
         <div className={`${ubuntu.className} text-left md:text-left`}>
-          <p className="text-indigo-300 font-semibold tracking-wide">
+          <p className="text-[#212121] font-semibold tracking-wide">
             End-to-end
           </p>
           <h1 className="mt-1 text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
             Conversion Platform
           </h1>
-          <p className="mt-4 max-w-2xl text-white/70">
+          <p className="mt-4 max-w-2xl text-[#212121]/70">
             From media files to units — convert everything you need in seconds,
             right in your browser.
           </p>
@@ -54,9 +55,6 @@ export default function LandingHero() {
         <div className="pointer-events-none absolute right-[-140px] top-28 hidden md:block">
           {/* <CircularWatermark /> */}
         </div>
-
-        {/* Two feature cards (placeholder, optional) */}
-        {/* Add your content sections here as needed */}
       </div>
     </section>
   );
@@ -97,53 +95,14 @@ function Tile({
     >
       <Link href={href} className="flex flex-col items-start gap-3">
         <span className="grid h-12 w-12 place-items-center rounded-lg transition">
-          <Icon className="h-8 w-8 text-white/90" />
+          <Icon className="h-8 w-8 text-[#212121]/90" />
         </span>
         <span
-          className={`${ubuntu.className} text-sm font-medium text-white/85 group-hover:text-white transition`}
+          className={`${ubuntu.className} text-sm font-medium text-[#212121]/85 group-hover:text-[#212121] transition`}
         >
           {label}
         </span>
       </Link>
     </motion.div>
-  );
-}
-
-/* --- watermark graphic --- */
-function CircularWatermark() {
-  return (
-    <svg
-      width="520"
-      height="520"
-      viewBox="0 0 520 520"
-      className="opacity-[0.15] text-indigo-300"
-    >
-      <defs>
-        <linearGradient id="wm" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="currentColor" />
-          <stop offset="100%" stopColor="currentColor" />
-        </linearGradient>
-      </defs>
-      <circle
-        cx="260"
-        cy="260"
-        r="220"
-        fill="none"
-        stroke="url(#wm)"
-        strokeWidth="46"
-        strokeLinecap="round"
-        strokeDasharray="220 110"
-      />
-      <circle
-        cx="260"
-        cy="260"
-        r="150"
-        fill="none"
-        stroke="url(#wm)"
-        strokeWidth="46"
-        strokeLinecap="round"
-        strokeDasharray="160 80"
-      />
-    </svg>
   );
 }
