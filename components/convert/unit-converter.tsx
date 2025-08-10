@@ -75,7 +75,7 @@ export default function UnitConverter() {
         <h2 className={`${ubuntu.className} text-2xl md:text-3xl font-bold`}>
           Unit Converter
         </h2>
-        <p className={`${ubuntu.className} mt-2 text-[#212121]/70 text-xs`}>
+        <p className={`${ubuntu.className} mt-2 text-[#212121]/70 text-sm`}>
           Convert between any units within the same measurement type.
         </p>
 
@@ -100,7 +100,6 @@ export default function UnitConverter() {
             </Select>
           </div>
 
-          {/* Value + From (row 1) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label className="mb-2 block">Value</Label>
@@ -133,13 +132,12 @@ export default function UnitConverter() {
               </Select>
             </div>
 
-            {/* Swap (row 2) */}
             <div className="sm:col-span-2 flex justify-center rotate-90">
               <Button
                 type="button"
                 variant="secondary"
                 onClick={swap}
-                className="w-full sm:w-12 sm:h-12 rounded-full"
+                className="w-8 h-8 sm:w-12 sm:h-12 rounded-full shadow-md"
                 title="Swap units"
               >
                 <ArrowLeftRight className="h-5 w-5" />

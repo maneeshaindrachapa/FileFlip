@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ubuntu } from "@/lib/fonts";
@@ -8,16 +7,15 @@ import { PiFileDuotone, PiVideoLight } from "react-icons/pi";
 import { HiPhotograph } from "react-icons/hi";
 import { GiWhiteBook } from "react-icons/gi";
 import { AiOutlineCalculator } from "react-icons/ai";
-import { BsClockHistory, BsCurrencyExchange } from "react-icons/bs";
+import { BsClockHistory } from "react-icons/bs";
 
 const tiles = [
-  { href: "/video", icon: PiVideoLight, label: "Convert a Video & Audio" },
-  { href: "/photo", icon: HiPhotograph, label: "Convert an Image" },
-  { href: "/document", icon: PiFileDuotone, label: "Convert a Document" },
-  { href: "/ebook", icon: GiWhiteBook, label: "Convert an eBook" },
-  { href: "/units", icon: AiOutlineCalculator, label: "Convert Units" },
-  { href: "/currency", icon: BsCurrencyExchange, label: "Convert Currencies" },
-  { href: "/epoch", icon: BsClockHistory, label: "Convert Epoch Time" },
+  { href: "#video", icon: PiVideoLight, label: "Convert a Video & Audio" },
+  { href: "#image", icon: HiPhotograph, label: "Convert an Image" },
+  { href: "#document", icon: PiFileDuotone, label: "Convert a Document" },
+  { href: "#ebook", icon: GiWhiteBook, label: "Convert an eBook" },
+  { href: "#units", icon: AiOutlineCalculator, label: "Convert Units" },
+  { href: "#epoch", icon: BsClockHistory, label: "Convert Epoch Time" },
 ];
 
 export default function LandingHero() {
@@ -60,7 +58,6 @@ export default function LandingHero() {
   );
 }
 
-/* --- motion tile --- */
 function Tile({
   href,
   icon: Icon,
@@ -72,6 +69,18 @@ function Tile({
   label: string;
   index: number;
 }) {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      const y = target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: y - 80,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ y: 10, opacity: 0 }}
@@ -88,12 +97,16 @@ function Tile({
       }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "group rounded-xl border border-white/10backdrop-blur",
+        "group rounded-xl border border-white/10 backdrop-blur",
         "px-4 py-4 w-full sm:w-auto sm:min-w-[220px]",
         "shadow-[0_10px_40px_-18px_rgba(0,0,0,0.7)] transition"
       )}
     >
-      <Link href={href} className="flex flex-col items-start gap-3">
+      <a
+        href={href}
+        onClick={handleClick}
+        className="flex flex-col items-start gap-3"
+      >
         <span className="grid h-12 w-12 place-items-center rounded-lg transition">
           <Icon className="h-8 w-8 text-[#212121]/90" />
         </span>
@@ -102,7 +115,7 @@ function Tile({
         >
           {label}
         </span>
-      </Link>
+      </a>
     </motion.div>
   );
 }

@@ -19,6 +19,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ubuntu } from "@/lib/fonts";
+import { animate } from "framer-motion";
 
 type Props = {
   convertedCount?: number;
@@ -26,13 +27,12 @@ type Props = {
 };
 
 const LINKS = [
-  { href: "/video", label: "Video & Audio" },
-  { href: "/photo", label: "Photo" },
-  { href: "/document", label: "Document" },
-  { href: "/ebook", label: "eBook" },
-  { href: "/units", label: "Units" },
-  { href: "/currency", label: "Currencies" },
-  { href: "/epoch", label: "Epoch" },
+  { href: "#video", label: "Video & Audio" },
+  { href: "#image", label: "Photo" },
+  { href: "#document", label: "Document" },
+  { href: "#ebook", label: "eBook" },
+  { href: "#units", label: "Units" },
+  { href: "#epoch", label: "Epoch" },
 ];
 
 export default function LandingNavigationMenu({
@@ -40,6 +40,7 @@ export default function LandingNavigationMenu({
   brand = "FlipFile",
 }: Props) {
   const [shadow, setShadow] = useState(false);
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -48,6 +49,34 @@ export default function LandingNavigationMenu({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Smooth scroll using Framer Motion
+  const smoothScrollTo = (hash: string) => {
+    const el = document.querySelector(hash) as HTMLElement | null;
+    if (!el) return;
+
+    // Offset for sticky header (adjust as needed)
+    const OFFSET = 72;
+    const targetY = el.getBoundingClientRect().top + window.scrollY - OFFSET;
+
+    // Animate the scroll position
+    animate(window.scrollY, targetY, {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1], // easeOutCubic-ish
+      onUpdate: (v) => window.scrollTo(0, v),
+    });
+
+    // Update hash without jumping
+    history.replaceState(null, "", hash);
+  };
+
+  const handleNavClick =
+    (hash: string, closeSheet?: boolean) =>
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      smoothScrollTo(hash);
+      if (closeSheet) setOpen(false);
+    };
 
   return (
     <div
@@ -61,7 +90,7 @@ export default function LandingNavigationMenu({
         {/* Left: brand + mobile hamburger */}
         <div className="flex items-center gap-2">
           {/* Mobile: hamburger */}
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -86,9 +115,9 @@ export default function LandingNavigationMenu({
                   <Link
                     key={l.href}
                     href={l.href}
+                    onClick={handleNavClick(l.href, true)}
                     className={cn(
-                      "rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground",
-                      pathname === l.href && "bg-accent text-accent-foreground"
+                      "rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
                     {l.label}
@@ -101,8 +130,22 @@ export default function LandingNavigationMenu({
             </SheetContent>
           </Sheet>
 
-          {/* Brand */}
-          <Link href="/" className="flex items-center gap-2">
+          {/* Brand (click scrolls to top smoothly) */}
+          <Link
+            href="/"
+            onClick={(e) => {
+              if (location.pathname === "/") {
+                e.preventDefault();
+                animate(window.scrollY, 0, {
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1],
+                  onUpdate: (v) => window.scrollTo(0, v),
+                });
+                history.replaceState(null, "", "/");
+              }
+            }}
+            className="flex items-center gap-2"
+          >
             <Folder className="h-5 w-5" />
             <span
               className={`${ubuntu.className} font-semibold tracking-tight`}
@@ -120,9 +163,9 @@ export default function LandingNavigationMenu({
                 <NavigationMenuItem key={l.href}>
                   <Link
                     href={l.href}
+                    onClick={handleNavClick(l.href)}
                     className={cn(
-                      "text-sm text-[#212121]/80 hover:text-[#212121] transition relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100",
-                      pathname === l.href && "text-[#212121] font-medium"
+                      "text-sm text-[#212121]/80 hover:text-[#212121] transition relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100"
                     )}
                   >
                     {l.label}

@@ -315,9 +315,11 @@ function CropCanvas({
   );
 }
 
-/* ---------------- Main component (unchanged behavior) --------------- */
+type Props = {
+  onConvert?: (size: number) => void;
+};
 
-export default function ImageConvertSection() {
+export default function ImageConverterSection({ onConvert }: Props) {
   // files & meta
   const [files, setFiles] = useState<File[]>([]);
   const [imageMeta, setImageMeta] = useState<Meta[]>([]);
@@ -496,6 +498,7 @@ export default function ImageConvertSection() {
         await new Promise((r) => requestAnimationFrame(() => r(null)));
       }
       setResults(out);
+      onConvert?.(out.length);
     } catch (e: any) {
       setError(e?.message || "Conversion failed");
     } finally {
@@ -531,7 +534,7 @@ export default function ImageConvertSection() {
 
   return (
     <section className={`${ubuntu.className} bg-transparent text-[#212121]`}>
-      <div className="mx-auto max-w-6xl px-5 pb-12 pt-4">
+      <div className="mx-auto max-w-6xl px-5 pt-4">
         <h2 className="text-2xl md:text-3xl font-bold">Convert Images</h2>
         <p className="mt-2 text-[#212121]/70">{acceptText}</p>
 

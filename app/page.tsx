@@ -1,41 +1,43 @@
-import CurrencyConverter from "@/components/convert/currency-converter";
-import EpochConverter from "@/components/convert/epoch-convert";
-import ImageConvertSection from "@/components/convert/image-convert-section";
+"use client";
+import EbookConverter from "@/components/convert/ebook-converter";
+import EpochConverter from "@/components/convert/epoch-converter";
+import ImageConverterSection from "@/components/convert/image-converter";
 import UnitConverter from "@/components/convert/unit-converter";
 import LandingHero from "@/components/landing-page/landing-hero";
 import LandingNavigationMenu from "@/components/landing-page/navigation-menu";
+import { useState } from "react";
 
 export default function Home() {
+  const [convertedCount, setConvertedCount] = useState(0);
+
+  const handleConversion = (size: number) => {
+    setConvertedCount((prev) => prev + size);
+  };
   return (
     <>
-      <LandingNavigationMenu />
+      <LandingNavigationMenu convertedCount={convertedCount} />
 
       {/* Shared container spacing for everything */}
-      <div className="mx-auto max-w-6xl px-5 py-12 space-y-12">
+      <div className=" mx-auto max-w-6xl px-5 py-12 space-y-12">
         <LandingHero />
 
         {/* Image converter section */}
-        <section id="image-convert">
-          <ImageConvertSection />
+        <section id="image">
+          <ImageConverterSection onConvert={handleConversion} />
         </section>
 
         {/* Converters grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column: Currency + Unit stacked with consistent spacing */}
-          {/* <div className="flex flex-col gap-6 col-span-1">
-            <div id="currency-convert" className="w-full">
-              <CurrencyConverter />
-            </div>
-            <div id="unit-convert" className="w-full">
-              <UnitConverter />
-            </div>
-          </div> */}
-
-          {/* Right column: Epoch (let it fill height on desktop) */}
-          <div id="epoch-convert" className="w-full col-span-3">
-            <EpochConverter />
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div id="ebook" className="w-full">
+            <EbookConverter onConvert={handleConversion} />
+          </div>
+          <div id="units" className="w-full">
+            <UnitConverter />
           </div>
         </section>
+        <div id="epoch" className="w-full col-span-3">
+          <EpochConverter />
+        </div>
       </div>
     </>
   );
