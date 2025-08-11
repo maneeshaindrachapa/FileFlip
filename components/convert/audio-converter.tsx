@@ -9,9 +9,7 @@ import {
   type AudioTarget,
 } from "@/lib/audio-utils";
 
-import {
-  Card,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -171,13 +169,13 @@ export default function AudioConverter({ onConvert }: Props) {
             <Button
               onClick={doConvert}
               disabled={!canConvert}
-              className="sm:ml-3"
+              className="w-full sm:w-auto sm:min-w-[6.5rem]"
             >
               {busy ? "Converting…" : "Convert"}
             </Button>
 
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={() => {
                 setFile(null);
                 setError("");
@@ -185,7 +183,7 @@ export default function AudioConverter({ onConvert }: Props) {
                 resetOutput();
               }}
               disabled={busy}
-              className="sm:ml-2"
+              className="w-full sm:w-auto sm:min-w-[6.5rem] hover:bg-black/70 hover:text-white border border-[#212121]/10"
             >
               Reset
             </Button>

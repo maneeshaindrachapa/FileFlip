@@ -321,7 +321,7 @@ type Props = {
 
 export default function ImageConverterSection({ onConvert }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const ACCEPT = ACCEPTED_IMAGE_EXTS.join(",");
+  const ACCEPT = ACCEPTED_IMAGE_EXTS.join(", ");
 
   // files & meta
   const [files, setFiles] = useState<File[]>([]);

@@ -226,7 +226,8 @@ export default function EbookConverter({ onConvert }: Props) {
                 </button>
               </div>
               <div className="mt-2 text-xs">
-                Supported: {ACCEPTED.join(", ")}
+                Supported:
+                <br /> {ACCEPTED.join(", ")}
               </div>
             </div>
           </div>
