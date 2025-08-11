@@ -5,31 +5,56 @@ import {
   type PDFFont,
   type PDFImage,
 } from "pdf-lib";
-import * as pdfjsLib from "pdfjs-dist";
 
-/* ---------- Narrowed pdf.js types we actually use ---------- */
+/* -----------------------------------------------------------
+   pdf.js (legacy) — lazy loaded so it never runs during SSR
+   We use the legacy build and the JS worker (/pdf.worker.min.js).
+----------------------------------------------------------- */
+
+/** Minimal pdf.js types we actually use */
+type PdfJsPageViewport = { width: number; height: number };
+type PdfJsTextItem = { str: string };
+type PdfJsTextContent = { items: Array<PdfJsTextItem | unknown> };
+type PdfJsRenderTask = { promise: Promise<void> };
+
 type PdfJsPage = {
-  getTextContent: () => Promise<{ items: unknown[] }>;
-  getViewport: (opts: { scale: number }) => { width: number; height: number };
+  getTextContent: () => Promise<PdfJsTextContent>;
+  getViewport: (opts: { scale: number }) => PdfJsPageViewport;
   render: (opts: {
+    canvas: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
-    viewport: { width: number; height: number };
-  }) => { promise: Promise<void> };
+    viewport: PdfJsPageViewport;
+  }) => PdfJsRenderTask;
 };
+
 type PdfJsLoadedDoc = {
   numPages: number;
   getPage: (p: number) => Promise<PdfJsPage>;
 };
-type PdfJsGetDocument = (params: { data: ArrayBuffer }) => {
-  promise: Promise<PdfJsLoadedDoc>;
-};
-type PdfJsModule = {
+
+type PdfJsNamespace = {
   GlobalWorkerOptions: { workerSrc: string };
-  getDocument: PdfJsGetDocument;
+  getDocument: (params: { data: ArrayBuffer }) => {
+    promise: Promise<PdfJsLoadedDoc>;
+  };
 };
 
-const pdfjs = pdfjsLib as unknown as PdfJsModule;
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+let _pdfjs: PdfJsNamespace | null = null;
+
+/** Lazy-load the legacy build; set worker to /pdf.worker.min.js */
+async function getPdfjs(): Promise<PdfJsNamespace> {
+  if (_pdfjs) return _pdfjs;
+  if (typeof window === "undefined") {
+    throw new Error("pdf.js can only be loaded in the browser");
+  }
+  // Use legacy build to pair with the JS worker
+  const mod = (await import(
+    "pdfjs-dist/legacy/build/pdf.mjs"
+  )) as unknown as PdfJsNamespace;
+  mod.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+  _pdfjs = mod;
+  return mod;
+}
 
 /** Swap file extension: "book.epub" -> "book.pdf" */
 export function swapExt(name: string, ext: string) {
@@ -131,22 +156,26 @@ export async function textToPdf(text: string) {
 
 /** PDF (ArrayBuffer) -> plain text using pdf.js */
 export async function pdfToPlainText(buf: ArrayBuffer): Promise<string> {
+  const pdfjs = await getPdfjs();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
   let out = "";
   for (let p = 1; p <= doc.numPages; p++) {
     const page = await doc.getPage(p);
     const content = await page.getTextContent();
-    const line = (content.items as unknown[])
-      .map((it) =>
-        typeof it === "object" && it !== null && "str" in it
-          ?  
-            (it as { str: string }).str
-          : ""
-      )
+    const line = content.items
+      .map((it) => (isTextItem(it) ? it.str : ""))
       .join(" ");
     out += line + "\n\n";
   }
   return out.trim();
+
+  function isTextItem(x: PdfJsTextItem | unknown): x is PdfJsTextItem {
+    return (
+      typeof x === "object" &&
+      x !== null &&
+      "str" in (x as Record<string, unknown>)
+    );
+  }
 }
 
 /** Build a minimal EPUB (EPUB2) from plain text */
@@ -226,10 +255,7 @@ ${text
   });
 }
 
-/** Parse EPUB -> { text, html[], imagesMap }.
- *  - html[]: array of chapter XHTML strings (cleaned but with <img> kept)
- *  - images: { href -> { mime, data: Uint8Array } } resolved against OPF base
- */
+/** Parse EPUB -> { text, html[], imagesMap } */
 export async function parseEpub(
   buf: ArrayBuffer,
   onProgress?: (p: number) => void
@@ -298,7 +324,6 @@ export async function parseEpub(
       const src = (img.getAttribute("src") || "").trim();
       if (!src) return;
       const key = resolveHref(it.href, src); // resolve against chapter file
-      // find in zip
       if (!images[key]) {
         const mf = findManifestByHref(manifest, key);
         if (mf) {
@@ -322,7 +347,7 @@ export async function parseEpub(
   // Load image binaries
   const entries = Object.entries(images);
   for (let i = 0; i < entries.length; i++) {
-    const [key] = entries[i]; // remove unused 'v'
+    const [key] = entries[i];
     const mf = findManifestByHref(manifest, key);
     if (!mf) continue;
     const zf = zip.file(resPath(mf.href));
@@ -334,7 +359,6 @@ export async function parseEpub(
   return { text: textAll.trim(), html: chapters, images };
 
   function findManifestByHref(m: typeof manifest, hrefKey: string) {
-    // match by normalized href (without './' segments)
     const norm = normalize(hrefKey);
     for (const k of Object.keys(m)) {
       if (normalize(m[k].href) === norm) return m[k];
@@ -362,7 +386,6 @@ export async function epubToSingleHtml(
   chapters: string[],
   images: Record<string, { mime: string; data: Uint8Array }>
 ): Promise<Blob> {
-  // data URI map by normalized key (filename)
   const dataUris: Record<string, string> = {};
   for (const [href, { mime, data }] of Object.entries(images)) {
     dataUris[href.split("/").pop() || href] = `data:${mime};base64,${u8ToBase64(
@@ -506,7 +529,7 @@ export async function textToMinimalDocx(text: string): Promise<Blob> {
   return await zip.generateAsync({ type: "blob" });
 }
 
-/** EPUB -> PDF with images (very simple flow: text lines + images scaled to width) */
+/** EPUB -> PDF with images (text lines + images scaled to width) */
 export async function epubToPdfWithImages(
   chapters: string[],
   images: Record<string, { mime: string; data: Uint8Array }>,
@@ -536,7 +559,7 @@ export async function epubToPdfWithImages(
     }
   };
 
-  // build a map filename -> bytes
+  // build a map filename -> bytes for supported formats
   const imgMap: Record<string, Uint8Array> = {};
   for (const [href, { data, mime }] of Object.entries(images)) {
     const fname = href.split("/").pop() || href;
@@ -623,18 +646,25 @@ export async function pdfToEpubWithPageImages(
 </container>`
   );
 
-  // render pages to PNG
+  const pdfjs = await getPdfjs();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
   const pageIds: string[] = [];
   for (let p = 1; p <= doc.numPages; p++) {
     const page = await doc.getPage(p);
-    const viewport = page.getViewport({ scale: 2 }); // decent resolution
+    const viewport = page.getViewport({ scale: 2 });
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D context not available");
+
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    await page.render({
+      canvas,
+      canvasContext: ctx,
+      viewport,
+    }).promise;
 
     const blob: Blob = await new Promise((res, rej) =>
       canvas.toBlob(
