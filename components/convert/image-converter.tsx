@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import Dropzone from "./dropzone";
 import { Label } from "../ui/label";
 import { Download } from "lucide-react";
 import JSZip from "jszip";
@@ -33,6 +32,7 @@ import {
   computeCenteredCropRect,
   refitCropToAspect,
   renderCropToCanvas,
+  ACCEPTED_IMAGE_EXTS,
 } from "@/lib/image-utils";
 import { Input } from "../ui/input";
 import { Slider } from "../ui/slider";
@@ -320,6 +320,9 @@ type Props = {
 };
 
 export default function ImageConverterSection({ onConvert }: Props) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const ACCEPT = ACCEPTED_IMAGE_EXTS.join(",");
+
   // files & meta
   const [files, setFiles] = useState<File[]>([]);
   const [imageMeta, setImageMeta] = useState<Meta[]>([]);
@@ -539,7 +542,49 @@ export default function ImageConverterSection({ onConvert }: Props) {
         <p className="mt-2 text-[#212121]/70">{acceptText}</p>
 
         <Card className="mt-6 border-[#212121]/10 bg-[#212121]/[0.05] p-5">
-          <Dropzone onFiles={onPicked} />
+          {/* Dropzone replacement */}
+          <div
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const files = Array.from(e.dataTransfer.files || []);
+              if (files.length) onPicked(files);
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center transition",
+              "border-[#212121]/15 bg-white"
+            )}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept={ACCEPT}
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                if (files.length) onPicked(files);
+              }}
+            />
+            <div className="text-sm text-muted-foreground">
+              <div className="font-medium text-foreground">
+                {files.length
+                  ? files.map((f) => f.name).join(", ")
+                  : "Drag & drop files here"}
+              </div>
+              <div className="mt-1 text-xs">
+                or{" "}
+                <button
+                  className="underline underline-offset-4"
+                  onClick={() => inputRef.current?.click()}
+                  type="button"
+                >
+                  browse
+                </button>
+              </div>
+              <div className="mt-2 text-xs">Supports: {ACCEPT}</div>
+            </div>
+          </div>
 
           {!!imageMeta.length && (
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -877,12 +922,11 @@ export default function ImageConverterSection({ onConvert }: Props) {
           )}
 
           {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+          <p className={`${ubuntu.className} mt-3 text-xs text-[#212121]/50`}>
+            *Animated GIFs export the first frame. All processing happens
+            locally in your browser.
+          </p>
         </Card>
-
-        <p className={`${ubuntu.className} mt-3 text-xs text-[#212121]/50`}>
-          *Animated GIFs export the first frame. All processing happens locally
-          in your browser.
-        </p>
       </div>
     </section>
   );

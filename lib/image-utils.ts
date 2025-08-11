@@ -303,3 +303,16 @@ export async function renderCropToCanvas(
 
   return canvas;
 }
+
+export const ACCEPTED_IMAGE_EXTS = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".gif",
+  ".avif",
+  ".bmp",
+  ".svg",
+  ".ico",
+  ".ppm",
+] as const;

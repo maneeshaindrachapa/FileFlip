@@ -213,7 +213,7 @@ export default function EbookConverter({ onConvert }: Props) {
             />
             <div className="text-sm text-[#212121]/70">
               <div className="font-medium text-[#212121]">
-                {file ? file.name : "Drag & drop your file here"}
+                {file ? file.name : "Drag & drop your eBook here"}
               </div>
               <div className="mt-1 text-xs">
                 or{" "}
@@ -226,12 +226,12 @@ export default function EbookConverter({ onConvert }: Props) {
                 </button>
               </div>
               <div className="mt-2 text-xs">
-                Supported: {ACCEPTED.join(", ")} • Max size: 50 MB
+                Supported: {ACCEPTED.join(", ")}
               </div>
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="w-full sm:flex-1 min-w-0">
               <Label className="mb-2 block">Target format</Label>
               <Select
@@ -291,21 +291,23 @@ export default function EbookConverter({ onConvert }: Props) {
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col gap-3">
-            {progress > 0 && (
-              <>
-                <div className="flex items-center justify-between text-xs text-[#212121]/70">
-                  <span>Working…</span>
-                  <span>{Math.min(progress, 100)}%</span>
-                </div>
-                <Progress value={progress} className="h-2" />
-              </>
-            )}
-            {error && <p className="text-sm text-red-500">{error}</p>}
-          </div>
+          {(progress > 0 || error) && (
+            <div className="space-y-2">
+              {progress > 0 && (
+                <>
+                  <div className="flex items-center justify-between text-xs text-[#212121]/70">
+                    <span>Converting...</span>
+                    <span>{Math.min(progress, 100)}%</span>
+                  </div>
+                  <Progress value={progress} className="h-2" />
+                </>
+              )}
+              {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
+          )}
 
           {outUrl && !converting && (
-            <div className="mt-6 flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2">
               <Button
                 asChild
                 size="sm"
@@ -321,9 +323,10 @@ export default function EbookConverter({ onConvert }: Props) {
             </div>
           )}
 
-          <p className="mt-4 text-xs text-[#212121]/60">
-            In-browser only. DRM and complex page layouts aren’t supported. For
-            PDFs we rasterize pages for EPUB; text exports are best-effort.
+          <p className="text-xs text-[#212121]/60">
+            Note: In-browser only. DRM and complex page layouts aren’t
+            supported. For PDFs we rasterize pages for EPUB; text exports are
+            best-effort.
           </p>
         </Card>
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import AudioConverter from "@/components/convert/audio-converter";
 import EbookConverter from "@/components/convert/ebook-converter";
 import EpochConverter from "@/components/convert/epoch-converter";
 import ImageConverterSection from "@/components/convert/image-converter";
@@ -31,10 +32,13 @@ export default function Home() {
           <div id="ebook" className="w-full">
             <EbookConverter onConvert={handleConversion} />
           </div>
-          <div id="units" className="w-full">
-            <UnitConverter />
+          <div id="audio" className="w-full">
+            <AudioConverter onConvert={handleConversion} />
           </div>
         </section>
+        <div id="units" className="w-full">
+          <UnitConverter />
+        </div>
         <div id="epoch" className="w-full col-span-3">
           <EpochConverter />
         </div>
