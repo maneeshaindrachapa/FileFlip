@@ -97,7 +97,11 @@ function imageFromRGBA(
   canvas.height = h;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("No 2D context");
-  ctx.putImageData(new ImageData(data, w, h), 0, 0);
+
+  // Create ImageData with the canvas context, then set pixels
+  const imgData = ctx.createImageData(w, h);
+  imgData.data.set(data);
+  ctx.putImageData(imgData, 0, 0);
 
   return new Promise((res, rej) => {
     canvas.toBlob((blob) => {
