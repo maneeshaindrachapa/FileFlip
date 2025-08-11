@@ -1,13 +1,21 @@
 "use client";
-import EbookConverter from "@/components/convert/ebook-converter";
 import EpochConverter from "@/components/convert/epoch-converter";
-import ImageConverterSection from "@/components/convert/image-converter";
 import UnitConverter from "@/components/convert/unit-converter";
 import LandingHero from "@/components/landing-page/landing-hero";
 import LandingNavigationMenu from "@/components/landing-page/navigation-menu";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 
 export default function Home() {
+  const EbookConverter = dynamic(
+    () => import("@/components/convert/ebook-converter"),
+    { ssr: false }
+  );
+  const ImageConverter = dynamic(
+    () => import("@/components/convert/image-converter"),
+    { ssr: false }
+  );
+
   const [convertedCount, setConvertedCount] = useState(0);
 
   const handleConversion = (size: number) => {
@@ -23,7 +31,7 @@ export default function Home() {
 
         {/* Image converter section */}
         <section id="image">
-          <ImageConverterSection onConvert={handleConversion} />
+          <ImageConverter onConvert={handleConversion} />
         </section>
 
         {/* Converters grid */}
