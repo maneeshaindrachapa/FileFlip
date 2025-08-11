@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { Upload } from "lucide-react";
 import { ubuntu } from "@/lib/fonts";
 
-const MAX = 10 * 1024 * 1024; // 10MB ✅
-const ACCEPT = "image/*,.svg,.gif,.ico,.psd,.ppm";
+const MAX = 10 * 1024 * 1024;
+const ACCEPT = "image/*,.svg,.gif,.ico,.ppm";
 
 export default function Dropzone({
   onFiles,

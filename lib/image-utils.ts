@@ -13,7 +13,6 @@ export const registry: Record<string, () => Promise<RasterDecoder>> = {
   bmp: async () => nativeDecoder,
   svg: async () => nativeDecoder, // pass-through for preview
   ico: async () => (await import("@/lib/decoders/ico")).decodeICO,
-  psd: async () => (await import("@/lib/decoders/psd")).decodePSDFlat,
   ppm: async () => (await import("@/lib/decoders/ppm")).decodePPM,
 };
 

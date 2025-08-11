@@ -350,7 +350,7 @@ export default function ImageConverterSection({ onConvert }: Props) {
   const [zipping, setZipping] = useState(false);
 
   const acceptText =
-    "JPG, PNG, WebP, GIF*, AVIF, BMP, SVG, ICO, PSD, PPM — all in-browser (Max 10MB each)";
+    "JPG, PNG, WebP, GIF*, AVIF, BMP, SVG, ICO, PPM — all in-browser (Max 10MB each)";
 
   const onPicked = useCallback((picked: File[]) => {
     setError("");
