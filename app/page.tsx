@@ -1,5 +1,6 @@
 "use client";
 import EpochConverter from "@/components/convert/epoch-converter";
+import ImageConverterSection from "@/components/convert/image-converter";
 import UnitConverter from "@/components/convert/unit-converter";
 import LandingHero from "@/components/landing-page/landing-hero";
 import LandingNavigationMenu from "@/components/landing-page/navigation-menu";
@@ -9,10 +10,6 @@ import { useState } from "react";
 export default function Home() {
   const EbookConverter = dynamic(
     () => import("@/components/convert/ebook-converter"),
-    { ssr: false }
-  );
-  const ImageConverter = dynamic(
-    () => import("@/components/convert/image-converter"),
     { ssr: false }
   );
 
@@ -31,7 +28,7 @@ export default function Home() {
 
         {/* Image converter section */}
         <section id="image">
-          <ImageConverter onConvert={handleConversion} />
+          <ImageConverterSection onConvert={handleConversion} />
         </section>
 
         {/* Converters grid */}
