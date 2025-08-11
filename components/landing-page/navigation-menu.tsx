@@ -181,7 +181,10 @@ export default function LandingNavigationMenu({
             title="Files converted"
           >
             {convertedCount.toLocaleString()}&nbsp;
-            <span className="text-[#212121]/50"> We&apos;ve converted</span>
+            <span className="text-[#212121]/50">
+              {" "}
+              files We&apos;ve converted
+            </span>
           </div>
         </div>
       </div>

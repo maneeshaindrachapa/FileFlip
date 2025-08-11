@@ -18,22 +18,28 @@ import { Download } from "lucide-react";
 
 import {
   swapExt,
-  pdfToPlainText,
-  pdfToEpubWithPageImages,
-  parseEpub,
-  epubToSingleHtml,
-  htmlArrayToMarkdown,
-  textToRtf,
-  textToMinimalDocx,
-  epubToPdfWithImages,
+  parseAnyToModel,
+  exportModel,
+  sniffSource,
+  type TargetFmt,
+  type SourceKind,
 } from "@/lib/ebook-utils";
 
-const MAX_BYTES = 50 * 1024 * 1024; // 50 MB limit
-const ACCEPTED = [".epub", ".pdf"] as const;
-type TargetFmt = "pdf" | "txt" | "epub" | "html" | "md" | "rtf" | "docx";
+const MAX_BYTES = 50 * 1024 * 1024;
+const ACCEPTED = [
+  ".epub",
+  ".pdf",
+  ".cbz",
+  ".fb2",
+  ".html",
+  ".htm",
+  ".htmlz",
+  ".txt",
+  ".txtz",
+] as const;
 
 type Props = {
-  onConvert?: (size: number) => void;
+  onConvert?: (count: number) => void;
 };
 
 export default function EbookConverter({ onConvert }: Props) {
@@ -43,29 +49,39 @@ export default function EbookConverter({ onConvert }: Props) {
   const [error, setError] = useState<string>("");
   const [converting, setConverting] = useState(false);
 
-  // Output state (for download button)
   const [outUrl, setOutUrl] = useState<string>("");
   const [outName, setOutName] = useState<string>("");
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const canConvert = useMemo(() => !!file && file.size <= MAX_BYTES, [file]);
 
-  const sourceExt = useMemo(() => {
-    if (!file) return "";
-    const i = file.name.lastIndexOf(".");
-    return i >= 0 ? file.name.slice(i).toLowerCase() : "";
+  const sourceKind: SourceKind | null = useMemo(() => {
+    if (!file) return null;
+    return sniffSource(file.name);
   }, [file]);
 
+  // Allowed targets per sourceKind
   const allowedTargets: TargetFmt[] = useMemo(() => {
-    if (sourceExt === ".pdf") return ["epub", "txt"]; // pdf -> epub (images), txt
-    if (sourceExt === ".epub")
-      return ["pdf", "txt", "html", "md", "rtf", "docx"];
-    return ["pdf", "txt", "epub", "html", "md", "rtf", "docx"];
-  }, [sourceExt]);
+    switch (sourceKind) {
+      case "pdf":
+        // we have image-based model; text-based routes also possible
+        return ["epub", "pdf", "html", "md", "txt", "rtf", "docx"];
+      case "epub":
+      case "fb2":
+      case "html":
+      case "htmlz":
+      case "txt":
+      case "txtz":
+        return ["epub", "pdf", "html", "md", "txt", "rtf", "docx"];
+      case "cbz":
+        return ["epub", "pdf", "html"];
+      default:
+        return ["pdf", "txt", "epub", "html", "md", "rtf", "docx"];
+    }
+  }, [sourceKind]);
 
   const onPick = () => inputRef.current?.click();
 
-  // Revoke previous object URL whenever we replace it or unmount
   useEffect(() => {
     return () => {
       if (outUrl) URL.revokeObjectURL(outUrl);
@@ -89,18 +105,22 @@ export default function EbookConverter({ onConvert }: Props) {
       const dot = f.name.lastIndexOf(".");
       const ext = dot >= 0 ? f.name.slice(dot).toLowerCase() : "";
 
-      if (!(ACCEPTED as readonly string[]).includes(ext)) {
+      if (!(ACCEPTED as readonly string[]).includes(String(ext))) {
         setError(
-          `Unsupported file type: ${ext || "(none)"} . Only EPUB or PDF.`
+          `Unsupported file type: ${
+            ext || "(none)"
+          }. Supported: ${ACCEPTED.join(", ")}.`
         );
         return;
       }
       if (f.size > MAX_BYTES) {
-        setError("File is larger than 50 MB. Please upload a smaller file.");
+        setError("File is larger than 50 MB. Please choose a smaller file.");
         return;
       }
-      // Default target based on input (user can change)
-      setTarget(ext === ".pdf" ? "epub" : "pdf");
+
+      // sensible default target
+      const kind = sniffSource(f.name);
+      setTarget(kind === "pdf" ? "epub" : "pdf");
       setFile(f);
     },
     [clearOutput]
@@ -122,93 +142,48 @@ export default function EbookConverter({ onConvert }: Props) {
     clearOutput();
 
     try {
-      const buf = await f.arrayBuffer();
-      setProgress(15);
+      setProgress(10);
+      const model = await parseAnyToModel(f, (p) =>
+        setProgress(10 + Math.round(p * 70))
+      );
 
-      const ext = f.name.slice(f.name.lastIndexOf(".")).toLowerCase();
+      setProgress(85);
+      const out = await exportModel(model, t);
 
-      if (ext === ".epub") {
-        setProgress(25);
-        const { text, html, images } = await parseEpub(buf, (p: number) =>
-          setProgress(25 + Math.round(p * 40))
-        );
-
-        if (!text.trim())
-          throw new Error("Could not extract text from EPUB chapters.");
-
-        if (t === "txt") {
-          const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "txt"));
-        } else if (t === "html") {
-          const blob = await epubToSingleHtml(html, images);
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "html"));
-        } else if (t === "md") {
-          const md = htmlArrayToMarkdown(html, images);
-          const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "md"));
-        } else if (t === "rtf") {
-          const rtf = textToRtf(text); // text-only RTF
-          const blob = new Blob([rtf], { type: "application/rtf" });
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "rtf"));
-        } else if (t === "docx") {
-          const blob = await textToMinimalDocx(text); // BASIC docx (no images)
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "docx"));
-        } else if (t === "pdf") {
-          setProgress(70);
-          const pdfBytes = await epubToPdfWithImages(
-            html,
-            images,
-            (p: number) => setProgress(70 + Math.round(p * 25))
-          );
-          const ab = new ArrayBuffer(pdfBytes.byteLength);
-          new Uint8Array(ab).set(pdfBytes);
-          const blob = new Blob([ab], { type: "application/pdf" });
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "pdf"));
-        } else {
-          throw new Error("EPUB → EPUB conversion is not meaningful here.");
-        }
-        setProgress(100);
-        onConvert?.(1);
-      } else if (ext === ".pdf") {
-        if (t === "txt") {
-          setProgress(30);
-          const text = await pdfToPlainText(buf);
-          if (!text.trim()) throw new Error("Could not extract text from PDF.");
-          const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-          setOutUrl(URL.createObjectURL(blob));
-          setOutName(swapExt(f.name, "txt"));
-          setProgress(100);
-          onConvert?.(1);
-        } else if (t === "epub") {
-          // PDF -> EPUB with page images (bitmap pages)
-          const epubBlob = await pdfToEpubWithPageImages(buf, {
-            title: f.name.replace(/\.[^.]+$/, ""),
-            author: "Unknown",
-            onProgress: (p: number) => setProgress(10 + Math.round(p * 80)), // 10→90
-          });
-          setOutUrl(URL.createObjectURL(epubBlob));
-          setOutName(swapExt(f.name, "epub"));
-          setProgress(100);
-          onConvert?.(1);
-        } else {
-          throw new Error(
-            "PDF → this format is not available (choose EPUB or TXT)."
-          );
-        }
+      let blob: Blob;
+      if (out instanceof Uint8Array) {
+        // Ensure we pass an ArrayBuffer, not a Uint8Array<ArrayBufferLike>
+        const ab = out.buffer.slice(
+          out.byteOffset,
+          out.byteOffset + out.byteLength
+        ) as ArrayBuffer;
+        const mime =
+          t === "pdf"
+            ? "application/pdf"
+            : t === "epub"
+            ? "application/epub+zip"
+            : "application/octet-stream";
+        blob = new Blob([ab], { type: mime });
+      } else if (typeof out === "string") {
+        const type =
+          t === "md"
+            ? "text/markdown;charset=utf-8"
+            : t === "txt"
+            ? "text/plain;charset=utf-8"
+            : "text/plain;charset=utf-8";
+        blob = new Blob([out], { type });
       } else {
-        throw new Error("Unsupported input type.");
+        blob = out;
       }
+      const nameExt = t === "html" ? "html" : t;
+      setOutUrl(URL.createObjectURL(blob));
+      setOutName(swapExt(f.name, nameExt));
+      setProgress(100);
+      onConvert?.(1);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Conversion failed.");
     } finally {
       setConverting(false);
-      // keep progress visible until user downloads/resets; don't auto-reset
     }
   };
 
@@ -217,8 +192,7 @@ export default function EbookConverter({ onConvert }: Props) {
       <div className={`${ubuntu.className} max-w-3xl px-5`}>
         <h2 className="text-2xl md:text-3xl font-bold">Convert eBooks</h2>
         <p className="mt-2 text-sm text-[#212121]/70">
-          Upload an EPUB or PDF (≤ 50 MB). Click <b>Convert</b>, then download
-          the result.
+          Pick a file(≤ 50 MB) and hit <b>Convert</b>.
         </p>
 
         <Card className="mt-6 border-[#212121]/10 bg-[#212121]/[0.04] p-5">
@@ -239,7 +213,7 @@ export default function EbookConverter({ onConvert }: Props) {
             />
             <div className="text-sm text-[#212121]/70">
               <div className="font-medium text-[#212121]">
-                {file ? file.name : "Drag & drop your EPUB or PDF here"}
+                {file ? file.name : "Drag & drop your file here"}
               </div>
               <div className="mt-1 text-xs">
                 or{" "}
@@ -252,7 +226,7 @@ export default function EbookConverter({ onConvert }: Props) {
                 </button>
               </div>
               <div className="mt-2 text-xs">
-                Supported: EPUB, PDF • Max size: 50 MB
+                Supported: {ACCEPTED.join(", ")} • Max size: 50 MB
               </div>
             </div>
           </div>
@@ -278,9 +252,7 @@ export default function EbookConverter({ onConvert }: Props) {
 
               {file && !allowedTargets.includes(target) && (
                 <p className="mt-2 text-xs text-[#212121]/60">
-                  {sourceExt === ".pdf"
-                    ? "For PDF input, choose EPUB or TXT."
-                    : "For EPUB input, choose PDF or TXT."}
+                  That output isn’t meaningful for this input.
                 </p>
               )}
             </div>
@@ -323,7 +295,7 @@ export default function EbookConverter({ onConvert }: Props) {
             {progress > 0 && (
               <>
                 <div className="flex items-center justify-between text-xs text-[#212121]/70">
-                  <span>Converting…</span>
+                  <span>Working…</span>
                   <span>{Math.min(progress, 100)}%</span>
                 </div>
                 <Progress value={progress} className="h-2" />
@@ -350,8 +322,8 @@ export default function EbookConverter({ onConvert }: Props) {
           )}
 
           <p className="mt-4 text-xs text-[#212121]/60">
-            Note: Output is text-focused. Complex layouts/images/DRM aren’t
-            supported in-browser.
+            In-browser only. DRM and complex page layouts aren’t supported. For
+            PDFs we rasterize pages for EPUB; text exports are best-effort.
           </p>
         </Card>
       </div>
