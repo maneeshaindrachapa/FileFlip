@@ -54,7 +54,7 @@ function blobToImage(blob: Blob): Promise<HTMLImageElement> {
       URL.revokeObjectURL(url);
       res(img);
     };
-    img.onerror = (e) => rej(new Error("Failed to decode ICO image"));
+    img.onerror = (e) => rej(new Error("Failed to decode ICO image:" + e));
     img.src = url;
   });
 }

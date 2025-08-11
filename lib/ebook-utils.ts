@@ -1,8 +1,35 @@
 import JSZip from "jszip";
-import { PDFDocument, StandardFonts } from "pdf-lib";
+import {
+  PDFDocument,
+  StandardFonts,
+  type PDFFont,
+  type PDFImage,
+} from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 
-(pdfjsLib as any).GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+/* ---------- Narrowed pdf.js types we actually use ---------- */
+type PdfJsPage = {
+  getTextContent: () => Promise<{ items: unknown[] }>;
+  getViewport: (opts: { scale: number }) => { width: number; height: number };
+  render: (opts: {
+    canvasContext: CanvasRenderingContext2D;
+    viewport: { width: number; height: number };
+  }) => { promise: Promise<void> };
+};
+type PdfJsLoadedDoc = {
+  numPages: number;
+  getPage: (p: number) => Promise<PdfJsPage>;
+};
+type PdfJsGetDocument = (params: { data: ArrayBuffer }) => {
+  promise: Promise<PdfJsLoadedDoc>;
+};
+type PdfJsModule = {
+  GlobalWorkerOptions: { workerSrc: string };
+  getDocument: PdfJsGetDocument;
+};
+
+const pdfjs = pdfjsLib as unknown as PdfJsModule;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 /** Swap file extension: "book.epub" -> "book.pdf" */
 export function swapExt(name: string, ext: string) {
@@ -104,13 +131,18 @@ export async function textToPdf(text: string) {
 
 /** PDF (ArrayBuffer) -> plain text using pdf.js */
 export async function pdfToPlainText(buf: ArrayBuffer): Promise<string> {
-  const doc = await (pdfjsLib as any).getDocument({ data: buf }).promise;
+  const doc = await pdfjs.getDocument({ data: buf }).promise;
   let out = "";
   for (let p = 1; p <= doc.numPages; p++) {
     const page = await doc.getPage(p);
     const content = await page.getTextContent();
-    const line = content.items
-      .map((it: any) => ("str" in it ? it.str : ""))
+    const line = (content.items as unknown[])
+      .map((it) =>
+        typeof it === "object" && it !== null && "str" in it
+          ?  
+            (it as { str: string }).str
+          : ""
+      )
       .join(" ");
     out += line + "\n\n";
   }
@@ -290,7 +322,7 @@ export async function parseEpub(
   // Load image binaries
   const entries = Object.entries(images);
   for (let i = 0; i < entries.length; i++) {
-    const [key, v] = entries[i];
+    const [key] = entries[i]; // remove unused 'v'
     const mf = findManifestByHref(manifest, key);
     if (!mf) continue;
     const zf = zip.file(resPath(mf.href));
@@ -507,7 +539,6 @@ export async function epubToPdfWithImages(
   // build a map filename -> bytes
   const imgMap: Record<string, Uint8Array> = {};
   for (const [href, { data, mime }] of Object.entries(images)) {
-    // pdf-lib supports JPEG/PNG
     const fname = href.split("/").pop() || href;
     if (/jpeg|jpg|png/i.test(mime)) imgMap[fname] = data;
   }
@@ -531,21 +562,23 @@ export async function epubToPdfWithImages(
         const filename = (m[1].split("/").pop() || m[1]).trim();
         const bytes = imgMap[filename];
         if (bytes) {
-          // embed image
-          let img: any;
+          // embed image (png first, then jpg)
+          let img: PDFImage | undefined;
           try {
             img = await pdf.embedPng(bytes);
           } catch {
             try {
               img = await pdf.embedJpg(bytes);
-            } catch {}
+            } catch {
+              img = undefined;
+            }
           }
           if (img) {
-            const iw = img.width,
-              ih = img.height;
+            const iw = img.width;
+            const ih = img.height;
             const scale = Math.min(maxWidth / iw, 1);
-            const w = iw * scale,
-              h = ih * scale;
+            const w = iw * scale;
+            const h = ih * scale;
             if (y - h < margin) {
               page = pdf.addPage([pageWidth, pageHeight]);
               y = pageHeight - margin;
@@ -591,19 +624,23 @@ export async function pdfToEpubWithPageImages(
   );
 
   // render pages to PNG
-  const doc = await (pdfjsLib as any).getDocument({ data: buf }).promise;
+  const doc = await pdfjs.getDocument({ data: buf }).promise;
   const pageIds: string[] = [];
   for (let p = 1; p <= doc.numPages; p++) {
     const page = await doc.getPage(p);
     const viewport = page.getViewport({ scale: 2 }); // decent resolution
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas 2D context not available");
     canvas.width = viewport.width;
     canvas.height = viewport.height;
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    const blob: Blob = await new Promise((res) =>
-      canvas.toBlob((b) => res(b!), "image/png")
+    const blob: Blob = await new Promise((res, rej) =>
+      canvas.toBlob(
+        (b) => (b ? res(b) : rej(new Error("Canvas toBlob failed"))),
+        "image/png"
+      )
     );
     const u8 = new Uint8Array(await blob.arrayBuffer());
     const fname = `page-${String(p).padStart(4, "0")}.png`;
@@ -698,7 +735,7 @@ function escapeXml(s: string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
-function wrapText(text: string, font: any, size: number, maxWidth: number) {
+function wrapText(text: string, font: PDFFont, size: number, maxWidth: number) {
   const words = text.split(/\s+/).filter(Boolean);
   const lines: string[] = [];
   let line = "";

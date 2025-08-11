@@ -499,8 +499,8 @@ export default function ImageConverterSection({ onConvert }: Props) {
       }
       setResults(out);
       onConvert?.(out.length);
-    } catch (e: any) {
-      setError(e?.message || "Conversion failed");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Conversion failed");
     } finally {
       setBusy(false);
     }
@@ -658,7 +658,7 @@ export default function ImageConverterSection({ onConvert }: Props) {
                           return next;
                         })
                       }
-                      previewHeight={420} // a touch taller for desktop; still responsive
+                      previewHeight={420}
                     />
                   </div>
 

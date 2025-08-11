@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { Menu, Folder, LucideFolderCog } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,6 @@ export default function LandingNavigationMenu({
 }: Props) {
   const [shadow, setShadow] = useState(false);
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setShadow(window.scrollY > 4);

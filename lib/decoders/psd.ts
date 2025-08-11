@@ -1,9 +1,14 @@
 import { readPsd, type Psd } from "ag-psd";
 
-/**
- * Returns an HTMLImageElement rendered from a PSD.
- * Prefers the embedded composite canvas if present; otherwise flattens visible layers.
- */
+type LayerNode = {
+  hidden?: boolean;
+  children?: LayerNode[];
+  canvas?: HTMLCanvasElement | OffscreenCanvas | null;
+  left?: number;
+  top?: number;
+  opacity?: number;
+};
+
 export async function decodePSDFlat(file: File): Promise<HTMLImageElement> {
   const buf = await file.arrayBuffer();
 
@@ -15,8 +20,10 @@ export async function decodePSDFlat(file: File): Promise<HTMLImageElement> {
   });
 
   // 1) If PSD has an embedded composite canvas, use it (fast path).
-  if (psd.canvas) {
-    return canvasToImage(psd.canvas as HTMLCanvasElement);
+  if ((psd as unknown as { canvas?: HTMLCanvasElement }).canvas) {
+    return canvasToImage(
+      (psd as unknown as { canvas: HTMLCanvasElement }).canvas
+    );
   }
 
   // 2) Otherwise flatten layers (basic source-over; ignores advanced blend/masks).
@@ -29,25 +36,36 @@ export async function decodePSDFlat(file: File): Promise<HTMLImageElement> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("No 2D context");
 
-  const drawLayer = (layer: any) => {
+  const normalizeAlpha = (op?: number) =>
+    typeof op === "number" ? (op > 1 ? op / 255 : op) : 1;
+
+  const drawLayer = (layer?: LayerNode | null): void => {
     if (!layer || layer.hidden) return;
+
     // nested groups
-    if (layer.children && Array.isArray(layer.children)) {
+    if (Array.isArray(layer.children) && layer.children.length) {
       layer.children.forEach(drawLayer);
       return;
     }
+
     if (layer.canvas) {
       const x = Math.round(layer.left ?? 0);
       const y = Math.round(layer.top ?? 0);
-      ctx.globalAlpha = layer.opacity ?? 1;
+      ctx.globalAlpha = normalizeAlpha(layer.opacity);
       ctx.globalCompositeOperation = "source-over";
-      ctx.drawImage(layer.canvas as HTMLCanvasElement, x, y);
+      // OffscreenCanvas needs conversion to a bitmap for drawImage in some browsers;
+      // but HTMLCanvasElement works directly. Cast safely:
+      const src =
+        layer.canvas instanceof HTMLCanvasElement
+          ? layer.canvas
+          : (layer.canvas as unknown as HTMLCanvasElement);
+      ctx.drawImage(src, x, y);
     }
   };
 
   // Photoshop renders bottom→top; children array is bottom→top in ag-psd.
-  if (Array.isArray(psd.children)) {
-    psd.children.forEach(drawLayer);
+  if (Array.isArray((psd as unknown as { children?: LayerNode[] }).children)) {
+    (psd as unknown as { children: LayerNode[] }).children.forEach(drawLayer);
   }
 
   return canvasToImage(canvas);
