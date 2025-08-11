@@ -6,11 +6,6 @@ import {
   type PDFImage,
 } from "pdf-lib";
 
-/* -----------------------------------------------------------
-   pdf.js (legacy) — lazy loaded so it never runs during SSR
-   We use the legacy build and the JS worker (/pdf.worker.min.js).
------------------------------------------------------------ */
-
 /** Minimal pdf.js types we actually use */
 type PdfJsPageViewport = { width: number; height: number };
 type PdfJsTextItem = { str: string };
@@ -41,7 +36,6 @@ type PdfJsNamespace = {
 
 let _pdfjs: PdfJsNamespace | null = null;
 
-/** Lazy-load the legacy build; set worker to /pdf.worker.min.js */
 async function getPdfjs(): Promise<PdfJsNamespace> {
   if (_pdfjs) return _pdfjs;
   if (typeof window === "undefined") {
@@ -51,7 +45,7 @@ async function getPdfjs(): Promise<PdfJsNamespace> {
   const mod = (await import(
     "pdfjs-dist/legacy/build/pdf.mjs"
   )) as unknown as PdfJsNamespace;
-  mod.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+  mod.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
   _pdfjs = mod;
   return mod;
 }
