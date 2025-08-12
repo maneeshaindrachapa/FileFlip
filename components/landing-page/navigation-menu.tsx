@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, Folder, LucideFolderCog } from "lucide-react";
+import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { ubuntu } from "@/lib/fonts";
 import { animate } from "framer-motion";
+import { GiPlagueDoctorProfile } from "react-icons/gi";
 
 type Props = {
   convertedCount?: number;
@@ -26,7 +27,7 @@ type Props = {
 };
 
 const LINKS = [
-  { href: "#video", label: "Video & Audio" },
+  { href: "#audio", label: "Audio" },
   { href: "#image", label: "Photo" },
   { href: "#document", label: "Document" },
   { href: "#ebook", label: "eBook" },
@@ -102,7 +103,7 @@ export default function LandingNavigationMenu({
             <SheetContent side="left" className="w-72">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
-                  <LucideFolderCog className="h-5 w-5" />
+                  <GiPlagueDoctorProfile className="h-5 w-5" />
                   <span className="font-semibold">{brand}</span>
                 </SheetTitle>
               </SheetHeader>
@@ -144,7 +145,7 @@ export default function LandingNavigationMenu({
             }}
             className="flex items-center gap-2"
           >
-            <Folder className="h-5 w-5" />
+            <GiPlagueDoctorProfile className="h-5 w-5" />
             <span
               className={`${ubuntu.className} font-semibold tracking-tight`}
             >

@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ubuntu } from "@/lib/fonts";
-import { PiFileDuotone, PiVideoLight } from "react-icons/pi";
+import { PiFileAudioBold, PiFileDuotone } from "react-icons/pi";
 import { HiPhotograph } from "react-icons/hi";
 import { GiWhiteBook } from "react-icons/gi";
 import { AiOutlineCalculator } from "react-icons/ai";
 import { BsClockHistory } from "react-icons/bs";
 
 const tiles = [
-  { href: "#video", icon: PiVideoLight, label: "Convert a Video & Audio" },
+  { href: "#audio", icon: PiFileAudioBold, label: "Convert an Audio" },
   { href: "#image", icon: HiPhotograph, label: "Convert an Image" },
   { href: "#document", icon: PiFileDuotone, label: "Convert a Document" },
   { href: "#ebook", icon: GiWhiteBook, label: "Convert an eBook" },

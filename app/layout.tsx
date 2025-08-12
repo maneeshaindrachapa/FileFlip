@@ -16,6 +16,14 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* AdSense - Replace this once adsense is approved ca-pub-XXXXXXXXXXXXXXXX */}
+
+        <link rel="icon" href="/favicon-dark.png" sizes="any" />
+        <link
+          rel="icon"
+          href="/favicon-light.png"
+          sizes="any"
+          media="(prefers-color-scheme: dark)"
+        />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
